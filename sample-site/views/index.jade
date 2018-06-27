@@ -1,0 +1,36 @@
+doctype html
+html(lang='en')
+  head
+    title Sample site
+    style.
+      .table-container {
+        margin: 25px 0 0px 15px;
+        width: 10%;
+      }
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th {
+        background-color: #ddd;
+      }
+      td, th {
+        border: 1px solid #eee;
+        text-align: left;
+        padding: 8px;
+      }
+      tr:nth-child(even) {
+        background-color: #ccc;
+      }
+  body
+    #container.table-container
+      table
+        thead
+          tr
+            th Left
+            th Right
+        tbody
+          tr
+            td #{left}
+            td #{right}

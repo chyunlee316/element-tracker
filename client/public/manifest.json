@@ -1,0 +1,13 @@
+{
+  "name": "ElementTracker web client",
+  "short_name": "ElementTracker client",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff",
+  "lang": "en-US",
+  "description": "Web client for StackBuster users.",
+  "prefer_related_applications": false,
+  "theme_color": "#fff",
+  "scope": "/",
+  "orientation": "portrait-primary"
+}

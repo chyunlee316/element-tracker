@@ -1,0 +1,23 @@
+# Logs
+*.log
+*.csv
+*.dat
+*.out
+*.zip
+*.gz
+
+# User specific configurations
+
+# User specific API-keys
+scheduler/serviceAccountKey.json
+client/public/scripts/firebase-config.js
+
+# Targets & generated sources
+
+# Firebase generated cli token
+token.key
+
+# Dependencies
+scheduler/node_modules
+functions/functions/node_modules
+sample-site/node_modules

@@ -1,0 +1,21 @@
+{
+  "name": "sample-site",
+  "version": "1.0.0",
+  "description": "A simple site with SSR for testing the element tracker",
+  "main": "server.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roby-rodriguez/element-tracker.git"
+  },
+  "author": "RobyRodriguez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/roby-rodriguez/element-tracker/issues"
+  },
+  "homepage": "https://github.com/roby-rodriguez/element-tracker#readme",
+  "dependencies": {
+    "express": "~3.2.4",
+    "jade": "^1.11.0"
+  }
+}

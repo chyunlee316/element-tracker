@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ElementTracker client</title>
+    <link href="//fonts.googleapis.com/css?family=Roboto" rel='stylesheet' type='text/css'>
+    <link type="text/css" rel="stylesheet" href="//cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+    <link type="text/css" rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="resources/icon.ico" type="image/x-icon" />
+</head>
+<body>
+    <div id="firebaseui-header-container" class="sb-header">
+        <img class="sb-logo" src="resources/sb_logo.PNG"><br />
+    </div>
+    <div id="firebaseui-auth-container"></div>
+    <div id="sb-auth-loader-container">
+        <div class="spinner">
+            <div class="double-bounce1"></div>
+            <div class="double-bounce2"></div>
+            <span class="spinner-title">Loading...</span>
+        </div>
+    </div>
+    <div id="sb-input-container" style="display: none">
+        <input id="tab1" class="sb-tab-input" type="radio" name="tabs" checked>
+        <label class="sb-tab-label" for="tab1">Enqueue</label>
+
+        <input id="tab2" class="sb-tab-input" type="radio" name="tabs" onclick="loadElements()">
+        <label class="sb-tab-label" for="tab2">Status</label>
+
+        <input id="tab3" class="sb-tab-input" type="radio" name="tabs">
+        <label class="sb-tab-label" for="tab3">API key</label>
+
+        <section id="content1">
+            <input id="sb-input-url" placeholder="Enter webpage URL..." class="w3-input w3-animate-input" type="text">
+            <input id="sb-input-xpath" placeholder="Enter element XPath..." class="w3-input w3-animate-input" type="text">
+
+            <button class="w3-btn w3-white w3-border w3-round-large sb-btn-add" onclick="enqueue()">Enqueue</button>
+            <div id="sb-message-container" style="display: none"></div>
+        </section>
+        <section id="content2">
+            <div id="sb-status-loader-container">
+                <div class="spinner">
+                    <div class="double-bounce1"></div>
+                    <div class="double-bounce2"></div>
+                </div>
+                <span>Loading queue items...</span>
+            </div>
+
+            <div id="sb-status-table-container" style="display: none;">
+            </div>
+        </section>
+        <section id="content3">
+            <p>
+                TODO
+            </p>
+            <p>
+                There is no API key for this user. You can request one at <a href="mailto:service@stack-buster.com">service@stack-buster.com</a>
+            </p>
+        </section>
+    </div>
+    <script src="//gstatic.com/firebasejs/4.13.0/firebase-app.js"></script>
+    <script src="//gstatic.com/firebasejs/4.13.0/firebase-auth.js"></script>
+    <script src="//gstatic.com/firebasejs/4.13.0/firebase-database.js"></script>
+    <script src="//cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.js"></script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+
+    <script src="scripts/firebase-config.js"></script>
+    <script src="scripts/sb-util.js"></script>
+    <script src="scripts/sb-api.js"></script>
+    <script src="scripts/sb-ui.js"></script>
+    <script>
+        var ui = new firebaseui.auth.AuthUI(firebase.auth());
+
+        ui.start('#firebaseui-auth-container', {
+            callbacks: {
+                signInSuccess: function(currentUser, credential, redirectUrl) {
+                    var stackBusterUser = {
+                        uid: currentUser.uid,
+                        displayName: currentUser.displayName,
+                        email: currentUser.email,
+                        photoURL: currentUser.photoURL,
+                        signInMethod: credential.signInMethod
+                    };
+                    window.stackBusterUser = stackBusterUser;
+                    ElementTrackerUI.show('sb-input-container');
+                    ElementTrackerUI.buildLogo('firebaseui-header-container', stackBusterUser);
+                    return false
+                },
+                signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+                    // FIXME for some reason this doesn't get called
+                    return true;
+                },
+                uiShown: function() {
+                    // The widget is rendered.
+                    // Hide the loader.
+                    ElementTrackerUI.hide('sb-auth-loader-container');
+                }
+            },
+            // signInSuccessUrl: '',
+            signInFlow: 'popup',
+            signInOptions: [
+                firebase.auth.GoogleAuthProvider.PROVIDER_ID
+            ]
+        });
+
+        function loadElements() {
+            ElementTrackerAPI.loadElements(function (elementsObject) {
+                ElementTrackerUI.hide('sb-status-loader-container');
+                ElementTrackerUI.show('sb-status-table-container');
+                ElementTrackerUI.build('sb-status-table-container', elementsObject)
+            })
+        }
+
+        function enqueue() {
+            var url = document.getElementById('sb-input-url').value,
+                xpath = document.getElementById('sb-input-xpath').value;
+
+            ElementTrackerAPI.enqueue({
+                url: url,
+                xpath: xpath
+            }, function (error, info) {
+                ElementTrackerUI.buildMessage(error || info)
+            });
+        }
+    </script>
+</body>
+</html>
